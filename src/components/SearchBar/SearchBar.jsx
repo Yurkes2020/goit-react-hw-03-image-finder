@@ -13,7 +13,7 @@ export class SearchForm extends Component {
           <Field
             type="text"
             autocomplete="off"
-            autofocus
+            autoFocus
             placeholder="Search images and photos"
           />
         </Form>

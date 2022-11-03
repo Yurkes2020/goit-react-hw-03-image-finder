@@ -1,1 +1,9 @@
-<ul class="gallery">{/* <!-- Набор <li> с изображениями --> */}</ul>;
+import { GalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
+
+export const Gallery = () => {
+  return (
+    <ul>
+      <GalleryItem />
+    </ul>
+  );
+};
