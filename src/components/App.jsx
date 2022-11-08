@@ -1,38 +1,25 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 // import { Modal } from './Modal/Modal';
 import { Load } from './Button/Button';
 import { SearchForm } from './SearchBar/SearchBar';
-import { Gallery } from './ImageGallery/ImageGallery';
-import { fetchArticlesWithQuery } from 'Api/Api';
+import { FetchArticlesWithQuery } from 'Api/Api';
 import { Conteiner } from './App.styled';
 
 export class App extends Component {
   state = {
-    articles: [],
-    isLoading: false,
-    error: null,
+    searchQuery: '',
   };
 
-  async componentDidMount() {
-    this.setState({ isLoading: true });
-
-    try {
-      const articles = fetchArticlesWithQuery();
-      this.setState({ articles });
-    } catch (error) {
-      this.setState({ error });
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  }
+  handleFormSubmit = searchQuery => {
+    this.setState({ searchQuery });
+  };
 
   render() {
     return (
       <Conteiner>
-        <SearchForm />
-        <Gallery />
-        <Load />
-        {/* <Modal /> */}
+        <SearchForm onSubmit={this.handleFormSubmit} />
+        <FetchArticlesWithQuery searchQuery={this.state.searchQuery} />
+        <Load />/
       </Conteiner>
     );
   }
