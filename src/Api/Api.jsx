@@ -32,13 +32,13 @@ export class FetchArticlesWithQuery extends Component {
 
           this.setState({ status: 'resolved' });
         })
-        .catch(error => this.setState({ error, status: 'rejected' }));
-      // .finally(
-      //   window.scrollTo({
-      //     top: document.documentElement.scrollHeight,
-      //     behavior: 'smooth',
-      //   })
-      // );
+        .catch(error => this.setState({ error, status: 'rejected' }))
+        .finally(
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth',
+          })
+        );
     }
   }
 
