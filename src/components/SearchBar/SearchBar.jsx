@@ -33,6 +33,7 @@ export class SearchForm extends Component {
             <FcSearch />
           </Button>
           <Field
+            value={this.state.searchQuery}
             onChange={this.handleSearchChange}
             type="text"
             autocomplete="off"
