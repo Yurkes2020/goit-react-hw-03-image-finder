@@ -26,6 +26,7 @@ export class FetchArticlesWithQuery extends Component {
         })
         .then(data => {
           if (data.totalHits === 0) {
+            this.setState({ status: 'rejected' });
             return alert('Error');
           }
           this.setState(prevState => ({
@@ -34,6 +35,12 @@ export class FetchArticlesWithQuery extends Component {
           }));
         })
         .catch(error => this.setState({ error, status: 'rejected' }));
+      // .finally(
+      //   window.scrollTo({
+      //     top: document.documentElement.scrollHeight,
+      //     behavior: 'smooth',
+      //   })
+      // );
     }
   }
 
@@ -57,7 +64,11 @@ export class FetchArticlesWithQuery extends Component {
       );
     }
     if (this.state.status === 'rejected') {
-      return <p>По Вашему запросу ничего не найдено</p>;
+      return (
+        <p style={{ textAlign: 'center' }}>
+          По Вашему запросу ничего не найдено
+        </p>
+      );
     }
     if (this.state.status === 'resolved') {
       return <Gallery images={this.state.hits} modal={this.props.onClick} />;
