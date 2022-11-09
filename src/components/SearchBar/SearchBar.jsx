@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { FcSearch } from 'react-icons/fc';
 import { SearchBar, Form, Button, Field } from './SearchBar.styled';
@@ -7,6 +8,10 @@ export class SearchForm extends Component {
     searchQuery: '',
   };
 
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
   handleSearchChange = event => {
     this.setState({ searchQuery: event.currentTarget.value.toLowerCase() });
   };
@@ -14,7 +19,7 @@ export class SearchForm extends Component {
   handleSubmit = event => {
     event.preventDefault();
     if (this.state.searchQuery.trim() === '') {
-      return;
+      return alert('Please enter a search query');
     }
     this.props.onSubmit(this.state.searchQuery);
     this.setState({ searchQuery: '' });
