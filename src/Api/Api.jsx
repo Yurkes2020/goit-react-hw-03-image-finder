@@ -1,11 +1,10 @@
 import { Component } from 'react';
 import { Gallery } from 'components/ImageGallery/ImageGallery';
-import { Oval } from 'react-loader-spinner';
+import { Loader } from 'components/Loader/Loader';
 // import axios from 'axios';
 
 export class FetchArticlesWithQuery extends Component {
   state = {
-    hits: [],
     error: null,
     status: 'idle',
   };
@@ -29,10 +28,9 @@ export class FetchArticlesWithQuery extends Component {
             this.setState({ status: 'rejected' });
             return alert('Error');
           }
-          this.setState(prevState => ({
-            hits: [...prevState.hits, ...data.hits],
-            status: 'resolved',
-          }));
+          this.props.data(data.hits);
+
+          this.setState({ status: 'resolved' });
         })
         .catch(error => this.setState({ error, status: 'rejected' }));
       // .finally(
@@ -50,17 +48,18 @@ export class FetchArticlesWithQuery extends Component {
     }
     if (this.state.status === 'pending') {
       return (
-        <Oval
-          height={80}
-          width={80}
-          color="#4fa94d"
-          wrapperStyle={{ margin: 'auto' }}
-          visible={true}
-          ariaLabel="oval-loading"
-          secondaryColor="#4fa94d"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
-        />
+        <Loader />
+        // <Oval
+        //   height={80}
+        //   width={80}
+        //   color="#4fa94d"
+        //   wrapperStyle={{ margin: 'auto' }}
+        //   visible={true}
+        //   ariaLabel="oval-loading"
+        //   secondaryColor="#4fa94d"
+        //   strokeWidth={2}
+        //   strokeWidthSecondary={2}
+        // />
       );
     }
     if (this.state.status === 'rejected') {
@@ -71,7 +70,7 @@ export class FetchArticlesWithQuery extends Component {
       );
     }
     if (this.state.status === 'resolved') {
-      return <Gallery images={this.state.hits} modal={this.props.onClick} />;
+      return <Gallery images={this.props.hits} modal={this.props.onClick} />;
     }
   }
 }

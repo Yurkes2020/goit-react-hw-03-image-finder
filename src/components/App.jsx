@@ -7,6 +7,7 @@ import { Conteiner } from './App.styled';
 
 export class App extends Component {
   state = {
+    hits: [],
     searchQuery: '',
     showMore: false,
     imageLarge: '',
@@ -14,8 +15,25 @@ export class App extends Component {
     page: 1,
   };
 
+  updateHits = data => {
+    this.setState(prevState => ({
+      hits: [...prevState.hits, ...data],
+    }));
+  };
+
+  onClickButtonLoadMore = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
+
   handleFormSubmit = searchQuery => {
-    this.setState({ searchQuery, showMore: true });
+    this.setState({
+      searchQuery,
+      // showMore: true,
+      page: 1,
+      hits: [],
+    });
   };
 
   openModal = img => {
@@ -32,20 +50,21 @@ export class App extends Component {
     });
   };
 
-  onClickButtonLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
-
   render() {
     return (
       <Conteiner>
         <SearchForm onSubmit={this.handleFormSubmit} />
         <FetchArticlesWithQuery
+          data={this.updateHits}
+          hits={this.state.hits}
           searchQuery={this.state.searchQuery}
           page={this.state.page}
           onClick={this.openModal}
         />
-        {this.state.showMore && <Load loadMore={this.onClickButtonLoadMore} />}
+
+        {this.state.hits.length > 0 && (
+          <Load loadMore={this.onClickButtonLoadMore} />
+        )}
 
         {this.state.imageLarge && (
           <Modal
