@@ -24,12 +24,15 @@ export class FetchArticlesWithQuery extends Component {
           }
           return Promise.reject(new Error('Не найдено таких картинок'));
         })
-        .then(({ hits }) =>
+        .then(data => {
+          if (data.totalHits === 0) {
+            return alert('Error');
+          }
           this.setState(prevState => ({
-            hits: [...prevState.hits, ...hits],
+            hits: [...prevState.hits, ...data.hits],
             status: 'resolved',
-          }))
-        )
+          }));
+        })
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
   }
@@ -54,7 +57,7 @@ export class FetchArticlesWithQuery extends Component {
       );
     }
     if (this.state.status === 'rejected') {
-      return <p>{this.state.error.messege}</p>;
+      return <p>По Вашему запросу ничего не найдено</p>;
     }
     if (this.state.status === 'resolved') {
       return <Gallery images={this.state.hits} modal={this.props.onClick} />;
