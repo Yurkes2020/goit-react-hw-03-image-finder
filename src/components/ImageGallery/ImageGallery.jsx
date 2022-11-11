@@ -21,10 +21,5 @@ export const Gallery = ({ images, modal }) => {
 
 Gallery.propTypes = {
   modal: PropTypes.func.isRequired,
-  images: PropTypes.arrayOf({
-    id: PropTypes.string.isRequired,
-    tags: PropTypes.string.isRequired,
-    webformatURL: PropTypes.string.isRequired,
-    largeImageURL: PropTypes.string.isRequired,
-  }),
+  images: PropTypes.array.isRequired,
 };
