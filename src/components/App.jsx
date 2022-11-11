@@ -34,8 +34,9 @@ export class App extends Component {
     this.setState({ status: 'pending' });
     fetchArticlesWithQuery(searchQuery, page)
       .then(data => {
-        if (data.totalHits === 0) {
+        if (data.length === 0) {
           this.setState({ status: 'rejected' });
+          return;
         }
         this.setState({ status: 'resolved' });
         data.map(({ id, webformatURL, largeImageURL, tags }) =>

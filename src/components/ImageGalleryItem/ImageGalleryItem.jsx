@@ -12,10 +12,8 @@ export const GalleryItem = ({ image, tag, largeImg, onClick }) => {
 };
 
 GalleryItem.propTypes = {
-  images: PropTypes.arrayOf(
-    PropTypes.shape({
-      webformatURL: PropTypes.string.isRequired,
-      tags: PropTypes.string.isRequired,
-    })
-  ),
+  image: PropTypes.string.isRequired,
+  tag: PropTypes.string.isRequired,
+  largeImg: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
