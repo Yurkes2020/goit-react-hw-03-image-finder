@@ -1,20 +1,17 @@
 import PropTypes from 'prop-types';
 import { Image, Item } from './ImageGalleryItem.styled';
 
-export const GalleryItem = ({ images, openModal }) => {
+export const GalleryItem = ({ image, tag, largeImg, onClick }) => {
   return (
     <>
-      {images.map(image => (
-        <Item key={image.id} onClick={() => openModal(image)}>
-          <Image src={image.webformatURL} alt={image.tags} />
-        </Item>
-      ))}
+      <Item>
+        <Image onClick={() => onClick(largeImg, tag)} src={image} alt={tag} />
+      </Item>
     </>
   );
 };
 
 GalleryItem.propTypes = {
-  openModal: PropTypes.func.isRequired,
   images: PropTypes.arrayOf(
     PropTypes.shape({
       webformatURL: PropTypes.string.isRequired,

@@ -6,7 +6,15 @@ import { List } from './ImageGallery.styled';
 export const Gallery = ({ images, modal }) => {
   return (
     <List>
-      <GalleryItem images={images} openModal={modal} />
+      {images.map(({ id, tags, webformatURL, largeImageURL }) => (
+        <GalleryItem
+          onClick={modal}
+          key={id}
+          largeImg={largeImageURL}
+          image={webformatURL}
+          tag={tags}
+        />
+      ))}
     </List>
   );
 };

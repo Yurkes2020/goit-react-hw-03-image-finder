@@ -33,7 +33,7 @@ export class Modal extends Component {
     return createPortal(
       <Overlay onClick={this.onCloseByBackdrop}>
         <ModalImg>
-          <img src={this.props.img} alt="this.props.tag" />
+          <img src={this.props.img} alt={this.props.tag} />
         </ModalImg>
       </Overlay>,
       modalRoot

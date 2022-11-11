@@ -1,25 +1,91 @@
 import { Component } from 'react';
 import { Modal } from './Modal/Modal';
 import { Load } from './Button/Button';
+import { Loader } from 'components/Loader/Loader';
 import { SearchForm } from './SearchBar/SearchBar';
-import { FetchArticlesWithQuery } from 'Api/Api';
+import { Gallery } from 'components/ImageGallery/ImageGallery';
+import { fetchArticlesWithQuery } from 'components/Api/Api';
 import { Conteiner } from './App.styled';
 
 export class App extends Component {
   state = {
     hits: [],
     searchQuery: '',
-    showMore: false,
     imageLarge: '',
     tags: '',
     page: 1,
+    status: 'idle',
+    error: null,
   };
 
-  updateHits = data => {
-    this.setState(prevState => ({
-      hits: [...prevState.hits, ...data],
-    }));
-  };
+  componentDidUpdate(prevProps, prevState) {
+    const prevSearchQuery = prevState.searchQuery;
+    const searchQuery = this.state.searchQuery;
+
+    const prevPage = prevState.page;
+    const nextPage = this.state.page;
+
+    if (prevSearchQuery !== searchQuery || prevPage !== nextPage) {
+      this.getImages(searchQuery, this.state.page);
+    }
+  }
+
+  getImages(searchQuery, page) {
+    this.setState({ status: 'pending' });
+    fetchArticlesWithQuery(searchQuery, page)
+      .then(data => {
+        if (data.totalHits === 0) {
+          this.setState({ status: 'rejected' });
+        }
+        this.setState({ status: 'resolved' });
+        data.map(({ id, webformatURL, largeImageURL, tags }) =>
+          this.setState(prevState => ({
+            hits: [
+              ...prevState.hits,
+              { id, webformatURL, largeImageURL, tags },
+            ],
+          }))
+        );
+      })
+      .catch(error => this.setState({ error }))
+      .finally(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
+      });
+  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (
+  //     prevState.searchQuery !== this.state.searchQuery ||
+  //     prevState.page !== this.state.page
+  //   ) {
+  // this.setState({ status: 'pending' });
+  //     try {
+  //       const fetch = fetchArticlesWithQuery(
+  //         this.state.searchQuery,
+  //         this.state.page
+  //       );
+  //       console.log(fetch);
+  //       if (fetch.totalHits === 0) {
+  // this.setState({ status: 'rejected' });
+  //         return;
+  //       }
+  // this.setState({ status: 'resolved' });
+  //       this.setState(prevState => ({
+  //         hits: [...prevState.hits, ...fetch],
+  //         page: prevState.page + 1,
+  //       }));
+  //     } catch (error) {
+  //       this.setState({ error });
+  //     } finally {
+  //       window.scrollTo({
+  //         top: document.documentElement.scrollHeight,
+  //         behavior: 'smooth',
+  //       });
+  //     }
+  //   }
+  // }
 
   onClickButtonLoadMore = () => {
     this.setState(prevState => ({
@@ -30,20 +96,19 @@ export class App extends Component {
   handleFormSubmit = searchQuery => {
     this.setState({
       searchQuery,
-      // showMore: true,
       page: 1,
       hits: [],
     });
   };
 
-  openModal = img => {
+  openModal = (largeImg, tag) => {
     this.setState({
-      imageLarge: img.largeImageURL,
-      tags: img.tags,
+      imageLarge: largeImg,
+      tags: tag,
     });
   };
 
-  onCloseModal = () => {
+  closeModal = () => {
     this.setState({
       imageLarge: '',
       tags: '',
@@ -54,23 +119,27 @@ export class App extends Component {
     return (
       <Conteiner>
         <SearchForm onSubmit={this.handleFormSubmit} />
-        <FetchArticlesWithQuery
-          data={this.updateHits}
-          hits={this.state.hits}
-          searchQuery={this.state.searchQuery}
-          page={this.state.page}
-          onClick={this.openModal}
-        />
-
-        {this.state.hits.length > 0 && (
-          <Load loadMore={this.onClickButtonLoadMore} />
+        {this.state.status === 'idle' && (
+          <p style={{ textAlign: 'center' }}>Введите имя запроса</p>
         )}
 
+        {this.state.status === 'rejected' && (
+          <p style={{ textAlign: 'center' }}>
+            По Вашему запросу ничего не найдено
+          </p>
+        )}
+        {this.state.status === 'resolved' && (
+          <Gallery images={this.state.hits} modal={this.openModal} />
+        )}
+        {this.state.status === 'pending' && <Loader />}
+        {this.state.hits.length >= 12 && (
+          <Load loadMore={this.onClickButtonLoadMore} />
+        )}
         {this.state.imageLarge && (
           <Modal
             img={this.state.imageLarge}
             tag={this.state.tags}
-            closeModal={this.onCloseModal}
+            closeModal={this.closeModal}
           />
         )}
       </Conteiner>
