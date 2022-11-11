@@ -133,15 +133,16 @@ export class App extends Component {
           <Gallery images={this.state.hits} modal={this.openModal} />
         )}
         {this.state.status === 'pending' && <Loader />}
-        {this.state.hits.length >= 12 && (
-          <Load loadMore={this.onClickButtonLoadMore} />
-        )}
+
         {this.state.imageLarge && (
           <Modal
             img={this.state.imageLarge}
             tag={this.state.tags}
             closeModal={this.closeModal}
           />
+        )}
+        {this.state.hits.length >= 12 && (
+          <Load loadMore={this.onClickButtonLoadMore} />
         )}
       </Conteiner>
     );
