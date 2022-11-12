@@ -27,7 +27,7 @@ export class App extends Component {
     const nextPage = this.state.page;
 
     if (prevSearchQuery !== searchQuery || prevPage !== nextPage) {
-      this.getImages(searchQuery, this.state.page);
+      this.getImages(searchQuery, nextPage);
     }
   }
 
