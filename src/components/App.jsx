@@ -16,6 +16,7 @@ export class App extends Component {
     page: 1,
     status: 'idle',
     error: null,
+    showLoader: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -31,20 +32,21 @@ export class App extends Component {
   }
 
   getImages(searchQuery, page) {
-    this.setState({ status: 'pending' });
+    this.setState({ showLoader: true });
     fetchArticlesWithQuery(searchQuery, page)
       .then(data => {
         if (data.length === 0) {
           this.setState({ status: 'rejected' });
           return;
         }
-        this.setState({ status: 'resolved' });
         data.map(({ id, webformatURL, largeImageURL, tags }) =>
           this.setState(prevState => ({
             hits: [
               ...prevState.hits,
               { id, webformatURL, largeImageURL, tags },
             ],
+            status: 'resolved',
+            showLoader: false,
           }))
         );
       })
@@ -56,37 +58,6 @@ export class App extends Component {
         });
       });
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (
-  //     prevState.searchQuery !== this.state.searchQuery ||
-  //     prevState.page !== this.state.page
-  //   ) {
-  // this.setState({ status: 'pending' });
-  //     try {
-  //       const fetch = fetchArticlesWithQuery(
-  //         this.state.searchQuery,
-  //         this.state.page
-  //       );
-  //       console.log(fetch);
-  //       if (fetch.totalHits === 0) {
-  // this.setState({ status: 'rejected' });
-  //         return;
-  //       }
-  // this.setState({ status: 'resolved' });
-  //       this.setState(prevState => ({
-  //         hits: [...prevState.hits, ...fetch],
-  //         page: prevState.page + 1,
-  //       }));
-  //     } catch (error) {
-  //       this.setState({ error });
-  //     } finally {
-  //       window.scrollTo({
-  //         top: document.documentElement.scrollHeight,
-  //         behavior: 'smooth',
-  //       });
-  //     }
-  //   }
-  // }
 
   onClickButtonLoadMore = () => {
     this.setState(prevState => ({
@@ -132,7 +103,7 @@ export class App extends Component {
         {this.state.status === 'resolved' && (
           <Gallery images={this.state.hits} modal={this.openModal} />
         )}
-        {this.state.status === 'pending' && <Loader />}
+        {this.state.showLoader && <Loader />}
 
         {this.state.imageLarge && (
           <Modal
